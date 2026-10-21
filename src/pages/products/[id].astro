@@ -1,0 +1,95 @@
+---
+type Product = {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  thumbnail: string;
+  brand?: string;
+  rating?: number;
+  stock?: number;
+};
+
+export async function getStaticPaths() {
+  const res = await fetch("https://dummyjson.com/products?limit=6");
+  const data: { products: Product[] } = await res.json();
+
+  return data.products.map((product) => ({
+    params: { id: product.id.toString() },
+    props: { product }
+  }));
+}
+
+const { product } = Astro.props as { product: Product };
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{product.title}</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        background: #f6f7fb;
+        color: #1f2937;
+      }
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      }
+      img {
+        width: 100%;
+        max-width: 360px;
+        height: 260px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto 1rem;
+      }
+      .meta {
+        color: #6b7280;
+        margin-bottom: 1rem;
+      }
+      a {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: #2563eb;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .price {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a href="/">← Back to catalog</a>
+
+      <article class="card">
+        <img src={product.thumbnail} alt={product.title} />
+        <p class="meta">{product.category}</p>
+        <h1>{product.title}</h1>
+        <p>{product.description}</p>
+
+        <p class="price">${product.price}</p>
+
+        {product.brand && <p><strong>Brand:</strong> {product.brand}</p>}
+        {product.rating && <p><strong>Rating:</strong> {product.rating}</p>}
+        {product.stock && <p><strong>Stock:</strong> {product.stock}</p>}
+      </article>
+    </main>
+  </body>
+</html>

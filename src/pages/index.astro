@@ -86,12 +86,12 @@ const products = data.products;
 
         <div class="grid">
           {products.map((product) => (
-            <article class="card">
+            <a href={`/products/${product.id}`} class="card">
               <img src={product.thumbnail} alt={product.title} />
               <span class="badge">{product.category}</span>
               <h3>{product.title}</h3>
               <p>${product.price}</p>
-            </article>
+            </a>
           ))}
         </div>
       </section>
